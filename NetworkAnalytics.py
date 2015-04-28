@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def getGraph():
-	folder='C:\\Users\\Ish\\Desktop\\Epic\\OSM\\undirected\\'
+	folder='/Users/Ish/Documents/Epic/OSM/undirected/'
 	G=nx.read_yaml(folder+'8hourBigNetwork.yaml')
 	return G
 

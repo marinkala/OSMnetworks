@@ -9,7 +9,7 @@ def plotFreq(quant, bucket): #degree, strength
 		quantString='Strength'
 	bucket=str(bucket)
 	folder='/Users/Ish/Documents/Epic/OSM/results/'
-	y=np.fromfile(folder+'AvgNet'+quantString+'/over_chan_'+bucket\
+	y=np.fromfile(folder+'AvgNet'+quantString+'/overlapping_changesets_by_'+bucket\
 	+'_hour_avg'+quantString+'.txt',sep=',')
 	time=pd.date_range(start='1/12/2010',end='2/12/2010',freq=bucket+'H')
 	fig=plt.figure()

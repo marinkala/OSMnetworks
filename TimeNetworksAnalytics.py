@@ -1,13 +1,17 @@
 import networkx as nx
 import numpy as np
+import pandas as pd
 import os.path
 import cent_measures
 
+def getFolder(bucket):
+	folder='/Users/Ish/Documents/OSM_Files/haiti_earthquake/networks/\
+overlapping_changesets_by_'+bucket+'_hour/'
+	return folder
 
 def networkSize(bucket):
 	bucket=str(bucket)
-	folder='/Users/Ish/Documents/OSM-Files/haiti_earthquake/networks/\
-overlapping_changesets/'+bucket+'_hour/'
+	folder=getFolder(bucket)
 	n=[]
 	name=[]
 	for file in os.listdir(folder):
@@ -18,11 +22,21 @@ overlapping_changesets/'+bucket+'_hour/'
 			n.append(len(G))
 	#np.array(n).tofile('networkSize.txt',sep=',')
 	return name, n
+
+def avgQuant(quant, bucket):
+	if quant=='degree':
+		quantString='Degs'
+	if quant=='strength':
+		quantString='Strength'
+	bucket=str(bucket)
+	folder='/Users/Ish/Documents/Epic/OSM/results/'
+	y=np.fromfile(folder+'AvgNet'+quantString+'/overlapping_changesets_by_'+bucket\
+	+'_hour_avg'+quantString+'.txt',sep=',')
+	return y
 	
-def diameter(bucket):
+def diameter(bucket): #diameter of largest componenent
 	bucket=str(bucket)	
-	folder='/Users/Ish/Documents/OSM-Files/haiti_earthquake/networks/\
-overlapping_changesets/'+bucket+'_hour/'
+	folder=getFolder(bucket)
 	d=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
@@ -38,8 +52,7 @@ overlapping_changesets/'+bucket+'_hour/'
 	
 def relCompSize(bucket):
 	bucket=str(bucket)
-	folder='/Users/Ish/Documents/OSM-Files/haiti_earthquake/networks/\
-overlapping_changesets/'+bucket+'_hour/'
+	folder=getFolder(bucket)
 	s=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
@@ -55,8 +68,7 @@ overlapping_changesets/'+bucket+'_hour/'
 	
 def clustering(bucket):
 	bucket=str(bucket)
-	folder='/Users/Ish/Documents/OSM-Files/haiti_earthquake/networks/\
-overlapping_changesets/'+bucket+'_hour/'
+	folder=getFolder(bucket)
 	c=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
@@ -71,14 +83,13 @@ overlapping_changesets/'+bucket+'_hour/'
 	
 def degreeAssort(bucket,weight):
 	bucket=str(bucket)
-	folder='/Users/Ish/Documents/OSM-Files/haiti_earthquake/networks/\
-overlapping_changesets/'+bucket+'_hour/'
+	folder=getFolder(bucket)
 	r=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
 			G=nx.read_gml(folder+file)
 			G=nx.Graph(G)
-			if len(G)>0:
+			if G.number_of_edges()>0:
 				r.append(nx.degree_assortativity_coefficient(G, weight=weight))
 			else:
 				r.append(-100)
@@ -87,15 +98,14 @@ overlapping_changesets/'+bucket+'_hour/'
 	
 def harmCent(bucket):
 	bucket=str(bucket)
-	folder='/Users/Ish/Documents/OSM-Files/haiti_earthquake/networks/\
-overlapping_changesets/'+bucket+'_hour/'
+	folder=getFolder(bucket)
 	c=[]
 	#slice=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
 			G=nx.read_gml(folder+file)
 			G=nx.Graph(G)
-			if len(G)>0:
+			if len(G)>1: #denominator of harm cent is num_nodes-1
 				cent=cent_measures.harm_cent(G)
 				c.append(sorted(cent, key=cent.get)[0])
 				#slice.append(file)
@@ -107,8 +117,7 @@ overlapping_changesets/'+bucket+'_hour/'
 	
 def btwCent(bucket):
 	bucket=str(bucket)
-	folder='/Users/Ish/Documents/OSM-Files/haiti_earthquake/networks/\
-overlapping_changesets/'+bucket+'_hour/'
+	folder=getFolder(bucket)
 	c=[]
 	#slice=[]
 	for file in os.listdir(folder):
@@ -127,8 +136,7 @@ overlapping_changesets/'+bucket+'_hour/'
 	
 def eigCent(bucket):
 	bucket=str(bucket)
-	folder='/Users/Ish/Documents/OSM-Files/haiti_earthquake/networks/\
-overlapping_changesets/'+bucket+'_hour/'
+	folder=getFolder(bucket)
 	c=[]
 	#slice=[]
 	for file in os.listdir(folder):
@@ -147,8 +155,7 @@ overlapping_changesets/'+bucket+'_hour/'
 
 def pagerank(bucket):
 	bucket=str(bucket)
-	folder='/Users/Ish/Documents/OSM-Files/haiti_earthquake/networks/\
-overlapping_changesets/'+bucket+'_hour/'
+	folder=getFolder(bucket)
 	c=[]
 	#slice=[]
 	for file in os.listdir(folder):
@@ -167,15 +174,14 @@ overlapping_changesets/'+bucket+'_hour/'
 
 def degCent(bucket, index):
 	bucket=str(bucket)
-	folder='/Users/Ish/Documents/OSM-Files/haiti_earthquake/networks/\
-overlapping_changesets/'+bucket+'_hour/'
+	folder=getFolder(bucket)
 	c=[]
 	#slice=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
 			G=nx.read_gml(folder+file)
 			G=nx.Graph(G)
-			if len(G)>index:
+			if len(G)>index+1: #degree_centrality has s=1.0/(len(G)-1.0)
 				cent=nx.degree_centrality(G)
 				c.append(sorted(cent, key=cent.get)[index])
 				#slice.append(file)
@@ -184,3 +190,22 @@ overlapping_changesets/'+bucket+'_hour/'
 	#np.array(c).tofile('eigCent.txt',sep=',')
 	#np.array(slice).tofile('eigCentSlices.txt',sep=',')
 	return c
+
+def propInList(bucket, list):
+	bucket=str(bucket)
+	folder=getFolder(bucket)
+	expProp=[] #proportion of users in some list - experienced, in wiki, and so forth
+	#slice=[]
+	for file in os.listdir(folder):
+		if file!='.DS_Store':
+			G=nx.read_gml(folder+file)
+			G=nx.Graph(G)
+			if len(G)>0:
+				names=G.nodes()
+				users=pd.Series(names)
+				exp=users.isin(list)
+				expProp.append(sum(exp)/float(len(exp)))
+				#slice.append(file)
+			else:
+				expProp.append(-100)
+	return expProp

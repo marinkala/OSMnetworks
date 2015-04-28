@@ -2,8 +2,7 @@ import networkx as nx
 import numpy as np
 import os.path
 
-folder='/Users/Ish/Documents/OSM-Files/haiti_earthquake/networks/\
-overlapping_changesets/'
+folder='/Users/Ish/Documents/OSM_Files/haiti_earthquake/networks/'
 out_folder='/Users/Ish/Documents/Epic/OSM/results/AvgNetDegs/'
 
 for dir in os.listdir(folder):
@@ -18,5 +17,5 @@ for dir in os.listdir(folder):
 			else:
 				avd=0
 			av_deg.append(avd)
-		np.array(av_deg).tofile(out_folder+'over_chan_'+dir+'_avgDegs.txt',sep=',')
+		np.array(av_deg).tofile(out_folder+dir+'_avgDegs.txt',sep=',')
 	
