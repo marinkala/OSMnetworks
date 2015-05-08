@@ -5,7 +5,7 @@ import os.path
 import cent_measures
 
 def getFolder(bucket):
-	folder='/Users/Ish/Documents/OSM_Files/haiti_earthquake/networks/\
+	folder='/Users/Ish/Documents/OSM_Files/haiti_earthquake/networks14days/\
 overlapping_changesets_by_'+bucket+'_hour/'
 	return folder
 
@@ -29,7 +29,7 @@ def avgQuant(quant, bucket):
 	if quant=='strength':
 		quantString='Strength'
 	bucket=str(bucket)
-	folder='/Users/Ish/Documents/Epic/OSM/results/'
+	folder='/Users/Ish/Dropbox/OSM/results/TwoWeeks/'
 	y=np.fromfile(folder+'AvgNet'+quantString+'/overlapping_changesets_by_'+bucket\
 	+'_hour_avg'+quantString+'.txt',sep=',')
 	return y
@@ -66,6 +66,37 @@ def relCompSize(bucket):
 	#np.array(s).tofile('largestCompFracSize.txt',sep=',')
 	return s
 	
+def singletons(bucket):
+	bucket=str(bucket)
+	folder=getFolder(bucket)
+	s=[]
+	for file in os.listdir(folder):
+		if file!='.DS_Store':
+			G=nx.read_gml(folder+file)
+			G=nx.Graph(G)
+			if len(G)>0:
+				s.append(len(nx.isolates(G))/float(len(G)))
+			else:
+				s.append(-100)
+	#np.array(s).tofile('largestCompFracSize.txt',sep=',')
+	return s
+
+def clustComp(bucket):
+	bucket=str(bucket)
+	folder=getFolder(bucket)
+	s=[]
+	for file in os.listdir(folder):
+		if file!='.DS_Store':
+			G=nx.read_gml(folder+file)
+			G=nx.Graph(G)
+			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
+			if len(G)>0:
+				s.append(nx.transitivity(comps[0]))
+			else:
+				s.append(-100)
+	#np.array(s).tofile('largestCompFracSize.txt',sep=',')
+	return s
+
 def clustering(bucket):
 	bucket=str(bucket)
 	folder=getFolder(bucket)
@@ -77,7 +108,7 @@ def clustering(bucket):
 			if len(G)>0:
 				c.append(nx.transitivity(G))
 			else:
-				c.append(0)
+				c.append(-100)
 	#np.array(c).tofile('globalClustering.txt',sep=',')
 	return c
 	

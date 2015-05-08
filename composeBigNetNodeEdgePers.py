@@ -27,7 +27,7 @@ def composeWeights(G,H):
 
 def combineAll(bucket):
 	bucket=str(bucket)
-	folder='/Users/Ish/Documents/OSM_Files/haiti_earthquake/networks/overlapping_changesets_by_'+\
+	folder='/Users/Ish/Documents/OSM_Files/haiti_earthquake/networks14days/overlapping_changesets_by_'+\
 	bucket+'_hour/'
 	B=nx.Graph()
 	for file in os.listdir(folder):
@@ -36,6 +36,6 @@ def combineAll(bucket):
 			G=nx.Graph(G)
 			B=composeWeights(B,G)
 	#return B
-	nx.write_yaml(B,'../results/'+bucket+'hourBigNetworkNodeEdgePers.yaml')
+	nx.write_yaml(B,'/Users/Ish/Dropbox/OSM/results/TwoWeeks/'+bucket+'hourBigNetworkNodeEdgePers.yaml')
 
-combineAll(8)
+combineAll(2)

@@ -3,15 +3,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def getGraph():
-	folder='/Users/Ish/Documents/Epic/OSM/undirected/'
-	G=nx.read_yaml(folder+'8hourBigNetwork.yaml')
+	folder='/Users/Ish/Dropbox/OSM/results/TwoWeeks/'
+	G=nx.read_yaml(folder+'2hourBigNetworkNodeEdgePers.yaml')
 	return G
 
 def plotDegDist(G):
 	deg=G.degree()
-	h,b=np.histogram(deg.values(),70)
+	h,b=np.histogram(deg.values(),max(deg.values())-min(deg.values()))
 	h1=h/float(sum(h))
-	plt.bar(b[:len(b)-1],h1, width=1.8857)
+	plt.bar(b[:len(b)-1],h1, width=1)
 	plt.xlim(xmin=0)
 	plt.ylim(ymin=0)
 	plt.xlabel('Node Degree')
@@ -21,14 +21,14 @@ def plotDegDist(G):
 	
 def getStrength(G):
 	A=nx.adjacency_matrix(G)
-	strength=np.sum(A,axis=1)
+	strength=A.sum(axis=1)
 	return strength
 	
 def plotStrenghDist(G):
 	strength=getStrength(G)
 	h,b=np.histogram(strength,100)
 	h1=h/float(sum(h))
-	plt.bar(b[:len(b)-1],h1, width=11.67)
+	plt.bar(b[:len(b)-1],h1, width=(max(strength)-min(strenght))/float(100)) 
 	plt.xlim(xmin=0)
 	plt.ylim(ymin=0)
 	plt.xlabel('Node Strength')
@@ -90,9 +90,14 @@ def plotNodePersistenceDist(G):
 def basicStats(G):
 	print 'number of nodes: ', len(G)
 	print 'number of edges: ', G.number_of_edges()
-	comps=nx.connected_component_subgraphs(G)
+	comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
 	print 'relative size of largest component: ', len(comps[0])/float(len(G))
 	print 'diameter: ', nx.diameter(comps[0])
 	print 'clustering coefficient: ', nx.transitivity(G)
 	print 'degree assort: ', nx.degree_assortativity_coefficient(G)
 	print 'weigthed degree assort: ', nx.degree_assortativity_coefficient(G, weight='weight')
+
+G=getGraph()
+basicStats(G)
+plotDegDist(G)
+plotStrenghDist(G)
