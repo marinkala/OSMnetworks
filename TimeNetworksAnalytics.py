@@ -50,6 +50,22 @@ def diameter(bucket): #diameter of largest componenent
 	#np.array(d).tofile('largestCompDiameter.txt',sep=',')
 	return d
 	
+def absCompSize(bucket):
+	bucket=str(bucket)
+	folder=getFolder(bucket)
+	s=[]
+	for file in os.listdir(folder):
+		if file!='.DS_Store':
+			G=nx.read_gml(folder+file)
+			G=nx.Graph(G)
+			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
+			if len(G)>0:
+				s.append(len(comps[0]))
+			else:
+				s.append(0)
+	#np.array(s).tofile('largestCompFracSize.txt',sep=',')
+	return s
+
 def relCompSize(bucket):
 	bucket=str(bucket)
 	folder=getFolder(bucket)
@@ -76,6 +92,22 @@ def singletons(bucket):
 			G=nx.Graph(G)
 			if len(G)>0:
 				s.append(len(nx.isolates(G))/float(len(G)))
+			else:
+				s.append(-100)
+	#np.array(s).tofile('largestCompFracSize.txt',sep=',')
+	return s
+
+def nonSinglComps(bucket):
+	bucketStr=str(bucket)
+	folder=getFolder(bucketStr)
+	s=[]
+	for file in os.listdir(folder):
+		if file!='.DS_Store':
+			G=nx.read_gml(folder+file)
+			G=nx.Graph(G)
+			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
+			if len(G)>0:
+				s.append(len(comps)-singletons(bucket))
 			else:
 				s.append(-100)
 	#np.array(s).tofile('largestCompFracSize.txt',sep=',')
