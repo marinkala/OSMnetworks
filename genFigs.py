@@ -9,6 +9,8 @@ def colToLabel(col):
 	if col=='netSize':
 		label='Network size'
 	if col=='compSize':
+		label='Relative size of largest connected component'
+	if col=='absCompSize':
 		label='Size of largest connected component'
 	if col=='compClust':
 		label='Largest connected component clustering'
@@ -28,6 +30,10 @@ def colToLabel(col):
 		label='Weighted degree assortativity'
 	if col=='expProp':
 		label='Proportion of new users'
+	if col=='propCompExp':
+		label='Proportion of experienced users in largest component'
+	if col=='expAssort':
+		label='Attribute assortativity based on experience'
 	return label
 
 def colToFilter(col):

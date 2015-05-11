@@ -9,6 +9,11 @@ def getFolder(bucket):
 overlapping_changesets_by_'+bucket+'_hour/'
 	return folder
 
+def getExpFolder(bucket):
+	folder='/Users/Ish/Dropbox/OSM/results/TwoWeeks/ExpAnnotNets/\
+overlapping_changesets_by_'+bucket+'_hour/'
+	return folder
+
 def networkSize(bucket):
 	bucket=str(bucket)
 	folder=getFolder(bucket)
@@ -77,6 +82,22 @@ def relCompSize(bucket):
 			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
 			if len(G)>0:
 				s.append(len(comps[0])/float(len(G)))
+			else:
+				s.append(0)
+	#np.array(s).tofile('largestCompFracSize.txt',sep=',')
+	return s
+
+def numComps(bucket):
+	bucket=str(bucket)
+	folder=getFolder(bucket)
+	s=[]
+	for file in os.listdir(folder):
+		if file!='.DS_Store':
+			G=nx.read_gml(folder+file)
+			G=nx.Graph(G)
+			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
+			if len(G)>0:
+				s.append(len(comps))
 			else:
 				s.append(0)
 	#np.array(s).tofile('largestCompFracSize.txt',sep=',')
@@ -272,3 +293,38 @@ def propInList(bucket, list):
 			else:
 				expProp.append(-100)
 	return expProp
+
+def propCompExp(bucket, list):
+	bucket=str(bucket)
+	folder=getFolder(bucket)
+	expProp=[] #proportion of users in some list - experienced, in wiki, and so forth
+	#slice=[]
+	for file in os.listdir(folder):
+		if file!='.DS_Store':
+			G=nx.read_gml(folder+file)
+			G=nx.Graph(G)
+			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
+			if len(comps[0])>0:
+				names=comps[0].nodes()
+				users=pd.Series(names)
+				exp=users.isin(list)
+				expProp.append(sum(exp)/float(len(exp)))
+				#slice.append(file)
+			else:
+				expProp.append(-100)
+	return expProp
+
+def expAssort(bucket):
+	bucket=str(bucket)
+	folder=getExpFolder(bucket)
+	r=[] #proportion of users in some list - experienced, in wiki, and so forth
+	#slice=[]
+	for file in os.listdir(folder):
+		if file!='.DS_Store':
+			G=nx.read_gpickle(folder+file)
+			G=nx.Graph(G)
+			if G.number_of_edges()>0:
+				r.append(nx.attribute_assortativity_coefficient(G, 'experienced'))
+			else:
+				r.append(-100)
+	return r
