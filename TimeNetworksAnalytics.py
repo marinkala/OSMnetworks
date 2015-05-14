@@ -3,11 +3,23 @@ import numpy as np
 import pandas as pd
 import os.path
 import cent_measures
+from networkx.readwrite import json_graph
+import json
+
 
 def getFolder(bucket):
+	#folder='/Users/Ish/Documents/OSM_Files/haiti_earthquake/networks14days/\
+#overlapping_changesets_by_'+bucket+'_hour/'
 	folder='/Users/Ish/Documents/OSM_Files/haiti_earthquake/networks14days/\
-overlapping_changesets_by_'+bucket+'_hour/'
+intersecting_roads_by_'+bucket+'_hour/'
 	return folder
+
+def getJsonNet(path):
+	data=open(path).read()
+	parsed=json.loads(data)
+	G=json_graph.node_link_graph(parsed)
+	return G
+
 
 def getExpFolder(bucket):
 	folder='/Users/Ish/Dropbox/OSM/results/TwoWeeks/ExpAnnotNets/\
@@ -80,7 +92,7 @@ def relCompSize(bucket):
 			G=nx.read_gml(folder+file)
 			G=nx.Graph(G)
 			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
-			if len(G)>0:
+			if len(G)>0: #should it be not just non-empty? but with edges?
 				s.append(len(comps[0])/float(len(G)))
 			else:
 				s.append(0)
@@ -128,7 +140,7 @@ def nonSinglComps(bucket):
 			G=nx.Graph(G)
 			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
 			if len(G)>0:
-				s.append(len(comps)-singletons(bucket))
+				s.append(len(comps)-len(nx.isolates(G)))
 			else:
 				s.append(-100)
 	#np.array(s).tofile('largestCompFracSize.txt',sep=',')
@@ -143,8 +155,9 @@ def clustComp(bucket):
 			G=nx.read_gml(folder+file)
 			G=nx.Graph(G)
 			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
-			if len(G)>0:
-				s.append(nx.transitivity(comps[0]))
+			i=3
+			if len(comps)>i:
+				s.append(nx.transitivity(comps[i]))
 			else:
 				s.append(-100)
 	#np.array(s).tofile('largestCompFracSize.txt',sep=',')
@@ -304,8 +317,11 @@ def propCompExp(bucket, list):
 			G=nx.read_gml(folder+file)
 			G=nx.Graph(G)
 			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
-			if len(comps[0])>0:
-				names=comps[0].nodes()
+			nonSinlComps=len(comps)-len(nx.isolates(G))
+			i=3
+			if (len(comps)>i) and (len(comps[i])>1): 
+			#non-empty graph and lagrest component is non-singleton
+				names=comps[i].nodes()
 				users=pd.Series(names)
 				exp=users.isin(list)
 				expProp.append(sum(exp)/float(len(exp)))
