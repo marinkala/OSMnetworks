@@ -20,10 +20,9 @@ def getJsonNet(path):
 	G=json_graph.node_link_graph(parsed)
 	return G
 
-
 def getExpFolder(bucket):
-	folder='/Users/Ish/Dropbox/OSM/results/TwoWeeks/ExpAnnotNets/\
-overlapping_changesets_by_'+bucket+'_hour/'
+	folder='/Users/Ish/Dropbox/OSM/results/TwoWeeks/overlapping_changesets/\
+ExpAnnotNets/overlapping_changesets_by_'+bucket+'_hour/'
 	return folder
 
 def networkSize(bucket):
@@ -34,7 +33,9 @@ def networkSize(bucket):
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
 			name.append(file)
-			G=nx.read_gml(folder+file)
+			path=folder+file
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			n.append(len(G))
 	#np.array(n).tofile('networkSize.txt',sep=',')
@@ -46,8 +47,8 @@ def avgQuant(quant, bucket):
 	if quant=='strength':
 		quantString='Strength'
 	bucket=str(bucket)
-	folder='/Users/Ish/Dropbox/OSM/results/TwoWeeks/'
-	y=np.fromfile(folder+'AvgNet'+quantString+'/overlapping_changesets_by_'+bucket\
+	folder='/Users/Ish/Dropbox/OSM/results/TwoWeeks/intersecting_roads/'
+	y=np.fromfile(folder+'AvgNet'+quantString+'/intersecting_roads_by_'+bucket\
 	+'_hour_avg'+quantString+'.txt',sep=',')
 	return y
 	
@@ -57,7 +58,9 @@ def diameter(bucket): #diameter of largest componenent
 	d=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
-			G=nx.read_gml(folder+file)
+			path=folder+file
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
 			if len(G)>0:
@@ -73,7 +76,9 @@ def absCompSize(bucket):
 	s=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
-			G=nx.read_gml(folder+file)
+			path=folder+file
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
 			if len(G)>0:
@@ -89,7 +94,9 @@ def relCompSize(bucket):
 	s=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
-			G=nx.read_gml(folder+file)
+			path=folder+file
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
 			if len(G)>0: #should it be not just non-empty? but with edges?
@@ -105,7 +112,9 @@ def numComps(bucket):
 	s=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
-			G=nx.read_gml(folder+file)
+			path=folder+file
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
 			if len(G)>0:
@@ -121,7 +130,9 @@ def singletons(bucket):
 	s=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
-			G=nx.read_gml(folder+file)
+			path=folder+file
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			if len(G)>0:
 				s.append(len(nx.isolates(G))/float(len(G)))
@@ -136,7 +147,9 @@ def nonSinglComps(bucket):
 	s=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
-			G=nx.read_gml(folder+file)
+			path=folder+file
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
 			if len(G)>0:
@@ -152,7 +165,9 @@ def clustComp(bucket):
 	s=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
-			G=nx.read_gml(folder+file)
+			path=folder+file
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
 			i=3
@@ -169,7 +184,9 @@ def clustering(bucket):
 	c=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
-			G=nx.read_gml(folder+file)
+			path=folder+file
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			if len(G)>0:
 				c.append(nx.transitivity(G))
@@ -184,7 +201,9 @@ def degreeAssort(bucket,weight):
 	r=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
-			G=nx.read_gml(folder+file)
+			path=folder+file
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			if G.number_of_edges()>0:
 				r.append(nx.degree_assortativity_coefficient(G, weight=weight))
@@ -200,7 +219,9 @@ def harmCent(bucket):
 	#slice=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
-			G=nx.read_gml(folder+file)
+			path=folder+file
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			if len(G)>1: #denominator of harm cent is num_nodes-1
 				cent=cent_measures.harm_cent(G)
@@ -219,7 +240,9 @@ def btwCent(bucket):
 	#slice=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
-			G=nx.read_gml(folder+file)
+			path=folder+file
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			if len(G)>0:
 				cent=cent_measures.btw_cent(G)
@@ -238,7 +261,9 @@ def eigCent(bucket):
 	#slice=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
-			G=nx.read_gml(folder+file)
+			path=folder+file
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			if len(G)>0:
 				cent=cent_measures.eig_cent(G)
@@ -257,7 +282,9 @@ def pagerank(bucket):
 	#slice=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
-			G=nx.read_gml(folder+file)
+			path=folder+file
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			if len(G)>0:
 				cent=nx.pagerank(G)
@@ -276,7 +303,9 @@ def degCent(bucket, index):
 	#slice=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
-			G=nx.read_gml(folder+file)
+			path=folder+file
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			if len(G)>index+1: #degree_centrality has s=1.0/(len(G)-1.0)
 				cent=nx.degree_centrality(G)
@@ -295,7 +324,9 @@ def propInList(bucket, list):
 	#slice=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
-			G=nx.read_gml(folder+file)
+			path=folder+file
+			#G=getJsonNet(path)
+			G=nx.read_gml(path)
 			G=nx.Graph(G)
 			if len(G)>0:
 				names=G.nodes()
@@ -307,24 +338,68 @@ def propInList(bucket, list):
 				expProp.append(-100)
 	return expProp
 
-def propCompExp(bucket, list):
+def propExp(bucket):
 	bucket=str(bucket)
 	folder=getFolder(bucket)
 	expProp=[] #proportion of users in some list - experienced, in wiki, and so forth
 	#slice=[]
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
-			G=nx.read_gml(folder+file)
+			path=folder+file
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
+			G=nx.Graph(G)
+			if len(G)>0:
+				expAttr=nx.get_node_attributes(G,'status')
+				exp=sum(x=='Experienced' for x in expAttr.values())
+				expProp.append(exp/float(len(expAttr)))
+				#slice.append(file)
+			else:
+				expProp.append(-100)
+	return expProp
+
+def propCompList(bucket, list):
+	bucket=str(bucket)
+	folder=getFolder(bucket)
+	expProp=[] #proportion of users in some list - experienced, in wiki, and so forth
+	#slice=[]
+	for file in os.listdir(folder):
+		if file!='.DS_Store':
+			path=folder+file
+			#G=getJsonNet(path)
+			G=nx.read_gml(path)
 			G=nx.Graph(G)
 			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
-			nonSinlComps=len(comps)-len(nx.isolates(G))
-			i=3
+			i=0
 			if (len(comps)>i) and (len(comps[i])>1): 
 			#non-empty graph and lagrest component is non-singleton
 				names=comps[i].nodes()
 				users=pd.Series(names)
 				exp=users.isin(list)
 				expProp.append(sum(exp)/float(len(exp)))
+				#slice.append(file)
+			else:
+				expProp.append(-100)
+	return expProp
+
+def propCompExp(bucket):
+	bucket=str(bucket)
+	folder=getFolder(bucket)
+	expProp=[] #proportion of users in some list - experienced, in wiki, and so forth
+	#slice=[]
+	for file in os.listdir(folder):
+		if file!='.DS_Store':
+			path=folder+file
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
+			G=nx.Graph(G)
+			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
+			i=0
+			if (len(comps)>i) and (len(comps[i])>1): 
+			#non-empty graph and lagrest component is non-singleton
+				expAttr=nx.get_node_attributes(comps[i],'status')
+				exp=sum(x=='Experienced' for x in expAttr.values())
+				expProp.append(exp/float(len(expAttr)))
 				#slice.append(file)
 			else:
 				expProp.append(-100)
@@ -344,3 +419,20 @@ def expAssort(bucket):
 			else:
 				r.append(-100)
 	return r
+
+def expAssortNew(bucket):
+	bucket=str(bucket)
+	folder=getFolder(bucket)
+	r=[] #proportion of users in some list - experienced, in wiki, and so forth
+	#slice=[]
+	for file in os.listdir(folder):
+		if file!='.DS_Store':
+			path=folder+file
+			G=getJsonNet(path)
+			G=nx.Graph(G)
+			if G.number_of_edges()>0:
+				r.append(nx.attribute_assortativity_coefficient(G, 'status'))
+			else:
+				r.append(-100)
+	return r
+

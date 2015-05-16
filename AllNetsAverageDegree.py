@@ -1,14 +1,14 @@
 import networkx as nx
 import numpy as np
 import os.path
-from TimeNetworkAnalytics import getJsonNet
+from TimeNetworksAnalytics import getJsonNet
 
 folder='/Users/Ish/Documents/OSM_Files/haiti_earthquake/networks14days/'
 out_folder='/Users/Ish/Dropbox/OSM/results/TwoWeeks/intersecting_roads/AvgNetDegs/'
 
 for dir in os.listdir(folder):
 	av_deg=[]
-	if dir.startswith('intersecting_roads'):
+	if dir.startswith('intersecting_roads_by_4'):
 	#if dir!='.DS_Store':
 		for file in os.listdir(folder+dir):
 			if file!='.DS_Store':

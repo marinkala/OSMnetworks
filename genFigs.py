@@ -2,7 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def getDF(bucket):
-	df=pd.DataFrame.from_csv('/Users/Ish/Dropbox/OSM/results/TimeSliceNetStats'+str(bucket)+'H2weeks.csv')
+	df=pd.DataFrame.from_csv('/Users/Ish/Dropbox/OSM/results/TwoWeeks/intersecting_roads/TimeSliceNetStats'\
++str(bucket)+'H2weeks.csv')
 	return df
 
 def colToLabel(col):
@@ -16,6 +17,10 @@ def colToLabel(col):
 		label='Largest connected component clustering'
 	if col=='singlProp':
 		label='Proportion of singletons'
+	if col=='numComps':
+		label='Number of connected components'
+	if col=='nonSinglComps':
+		label='Number of non-singleton components'
 	if col=='diameter':
 		label='Diameter of largest component'
 	if col=='avgDegree':
@@ -37,18 +42,19 @@ def colToLabel(col):
 	return label
 
 def colToFilter(col):
-	if (col=='clustering') | (col=='compClust') | (col=='singlProp') | (col=='assort') | (col=='weightAssort') | (col=='expProp'):
-		filt=True
-	else:
+	if (col=='netSize') | (col=='avgDegree') | (col=='avgStrength') | (col=='diameter') | \
+(col=='absCompSize') | (col=='compSize') | (col=='numComps'):
 		filt=False
+	else:
+		filt=True
 	return filt
 
 def getYlims(col):
 	ymax=1
-	if (col=='clustering') | (col=='expProp')| (col=='compClust') | (col=='singlProp'):
-		ymin=0
-	else:
+	if (col=='assort') | (col=='weightAssort')| (col=='expAssort'):
 		ymin=-1
+	else:
+		ymin=0
 	return ymin, ymax
 
 def overTime(bucket, col):
@@ -70,7 +76,7 @@ def overTime(bucket, col):
 	locs,labels=plt.xticks()
 	plt.setp(labels,rotation=-20)
 	plt.ylabel(label)
-	plt.title('Overlapping changesets by '+ bucket+' hours networks')
+	plt.title('Intersecting roads by '+ bucket+' hours networks')
 	ymin=0
 	ymax=max(y)
 	if filtFlag:
@@ -79,7 +85,9 @@ def overTime(bucket, col):
 	plt.xlim(xmin=pd.datetime(2010, 01,12), xmax=max(time))
 	if ymin==-1:
 		plt.hlines(y=0,xmin=pd.datetime(2010, 01,12), xmax=max(time),color='r',linestyles='--')
-	plt.savefig('/Users/Ish/Dropbox/OSM/results/TwoWeeks/Figures/'+bucket+'H/'+bucket+'H'+col+'OverTime.jpg')
+	plt.savefig('/Users/Ish/Dropbox/OSM/results/TwoWeeks/intersecting_roads/Figures/'\
++bucket+'H/'+bucket+'H'+col+'OverTime.jpg')
+	plt.close()
 
 def overTimeScatter(bucket, col):
 	bucket=str(bucket)
@@ -100,7 +108,7 @@ def overTimeScatter(bucket, col):
 	locs,labels=plt.xticks()
 	plt.setp(labels,rotation=-20)
 	plt.ylabel(label)
-	plt.title('Overlapping changesets by '+ bucket+' hours networks')
+	plt.title('Intersecting roads by '+ bucket+' hours networks')
 	ymin=0
 	ymax=max(y)
 	if filtFlag:
@@ -109,7 +117,9 @@ def overTimeScatter(bucket, col):
 	plt.xlim(pd.datetime(2010, 01,12), xmax=max(time))
 	if ymin==-1:
 		plt.hlines(y=0,xmin=pd.datetime(2010, 01,12), xmax=max(time),color='r',linestyles='--')
-	plt.savefig('/Users/Ish/Dropbox/OSM/results/TwoWeeks/Figures/'+bucket+'H/'+bucket+'H'+col+'OverTimeScatter.jpg')
+	plt.savefig('/Users/Ish/Dropbox/OSM/results/TwoWeeks/intersecting_roads/Figures/'\
++bucket+'H/'+bucket+'H'+col+'OverTimeScatter.jpg')
+	plt.close()
 
 def vsSize(bucket, col):
 	bucket=str(bucket)
@@ -128,7 +138,7 @@ def vsSize(bucket, col):
 	plt.scatter(x, y)
 	plt.xlabel('Network size')
 	plt.ylabel(label)
-	plt.title('Overlapping changesets by '+ bucket+' hours networks')
+	plt.title('Intersecting roads by '+ bucket+' hours networks')
 	ymin=0
 	ymax=max(y)
 	if filtFlag:
@@ -137,6 +147,43 @@ def vsSize(bucket, col):
 	plt.xlim(xmin=0, xmax=max(x))
 	if ymin==-1:
 		plt.hlines(y=0,xmin=0, xmax=max(x),color='r',linestyles='--')
-	plt.savefig('/Users/Ish/Dropbox/OSM/results/TwoWeeks/Figures/'+bucket+'H/'+bucket+'H'+col+'VsSize.jpg')
+	plt.savefig('/Users/Ish/Dropbox/OSM/results/TwoWeeks/intersecting_roads/Figures/'\
++bucket+'H/'+bucket+'H'+col+'VsSize.jpg')
+	plt.close()
 
-overTimeScatter(2,'weightAssort')
+def vsNewUsers(bucket, col):
+	bucket=str(bucket)
+	df=getDF(bucket)
+	label=colToLabel(col)
+	filtFlag=colToFilter(col)
+	y=df[col]
+	x=1-df.expProp
+	if filtFlag:
+		select=y[y>-100]
+		x=x[y>-100]
+		y=select
+	fig=plt.figure()
+	plt.scatter(x, y)
+	plt.xlabel('Proportion of new users')
+	plt.ylabel(label)
+	plt.title('Intersecting roads by '+ bucket+' hours networks')
+	ymin=0
+	ymax=max(y)
+	if filtFlag:
+		ymin,ymax=getYlims(col)
+	plt.ylim(ymin=ymin, ymax=ymax)
+	plt.xlim(xmin=0, xmax=0.5)
+	if ymin==-1:
+		plt.hlines(y=0,xmin=0, xmax=max(x),color='r',linestyles='--')
+	plt.savefig('/Users/Ish/Dropbox/OSM/results/TwoWeeks/intersecting_roads/Figures/'\
++bucket+'H/'+bucket+'H'+col+'VsNewUsers.jpg')
+	plt.close()
+
+columns=['netSize','compSize','absCompSize','compClust','singlProp','numComps','nonSinglComps','diameter',\
+'avgDegree','avgStrength','clustering','assort','weightAssort','expProp','propCompExp','expAssort']
+
+for c in columns:
+	overTime(4,c)
+	overTimeScatter(4,c)
+	vsSize(4,c)
+	vsNewUsers(4,c)
