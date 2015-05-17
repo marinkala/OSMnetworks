@@ -1,5 +1,6 @@
 import networkx as nx
 import os.path
+from TimeNetworksAnalytics import getJsonNet
 
 def composeWeights(G,H):
 	edgesH=H.edges()
@@ -27,15 +28,19 @@ def composeWeights(G,H):
 
 def combineAll(bucket):
 	bucket=str(bucket)
-	folder='/Users/Ish/Documents/OSM_Files/haiti_earthquake/networks14days/overlapping_changesets_by_'+\
-	bucket+'_hour/'
+	folder='/Users/Ish/Documents/OSM_Files/haiti_earthquake/networks14days/overlapping_changesets_by_'+bucket+'_hour/'
+	#expFolder='/Users/Ish/Dropbox/OSM/results/TwoWeeks/overlapping_changesets/ExpAnnotNets/\
+#overlapping_changesets_by_'+bucket+'_hour/'
 	B=nx.Graph()
 	for file in os.listdir(folder):
 		if file!='.DS_Store': #weird MAC thing
-			G=nx.read_gml(folder+file)
+			path=folder+file
+			#G=getJsonNet(path)
+			G=nx.read_gml(path)
 			G=nx.Graph(G)
 			B=composeWeights(B,G)
 	#return B
-	nx.write_yaml(B,'/Users/Ish/Dropbox/OSM/results/TwoWeeks/'+bucket+'hourBigNetworkNodeEdgePers.yaml')
+	nx.write_yaml(B,'/Users/Ish/Dropbox/OSM/results/TwoWeeks/overlapping_changesets/'+str(bucket)+\
+'hourBigNetworkNodeEdgePers.yaml')
 
-combineAll(2)
+combineAll(8)

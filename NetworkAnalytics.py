@@ -2,9 +2,9 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 
-def getGraph():
-	folder='/Users/Ish/Dropbox/OSM/results/TwoWeeks/'
-	G=nx.read_yaml(folder+'2hourBigNetworkNodeEdgePers.yaml')
+def getGraph(bucket):
+	folder='/Users/Ish/Dropbox/OSM/results/TwoWeeks/intersecting_roads/'
+	G=nx.read_yaml(folder+str(bucket)+'hourBigNetworkNodeEdgePers.yaml')
 	return G
 
 def plotDegDist(G):
@@ -28,7 +28,7 @@ def plotStrenghDist(G):
 	strength=getStrength(G)
 	h,b=np.histogram(strength,100)
 	h1=h/float(sum(h))
-	plt.bar(b[:len(b)-1],h1, width=(max(strength)-min(strenght))/float(100)) 
+	plt.bar(b[:len(b)-1],h1, width=(max(strength)-min(strength))[0,0]/float(100)) 
 	plt.xlim(xmin=0)
 	plt.ylim(ymin=0)
 	plt.xlabel('Node Strength')
@@ -65,7 +65,8 @@ def plotRatioDist(G):
 	
 def plotEdgePersistenceDist(G):
 	weights=nx.get_edge_attributes(G,'persistence').values()
-	h,b=np.histogram(weights,7)
+	bins=max(weights)-min(weights)
+	h,b=np.histogram(weights,bins)
 	h1=h/float(sum(h))
 	plt.bar(b[:len(b)-1],h1, width=1)
 	plt.xlim(xmin=0)
@@ -97,7 +98,9 @@ def basicStats(G):
 	print 'degree assort: ', nx.degree_assortativity_coefficient(G)
 	print 'weigthed degree assort: ', nx.degree_assortativity_coefficient(G, weight='weight')
 
-G=getGraph()
-basicStats(G)
-plotDegDist(G)
-plotStrenghDist(G)
+G=getGraph(8)
+#basicStats(G)
+#plotDegDist(G)
+#plotStrenghDist(G)
+#plotWeightDist(G)
+plotEdgePersistenceDist(G)

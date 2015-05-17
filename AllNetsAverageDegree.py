@@ -8,7 +8,7 @@ out_folder='/Users/Ish/Dropbox/OSM/results/TwoWeeks/intersecting_roads/AvgNetDeg
 
 for dir in os.listdir(folder):
 	av_deg=[]
-	if dir.startswith('intersecting_roads_by_4'):
+	if dir.startswith('intersecting_roads_by_12'):
 	#if dir!='.DS_Store':
 		for file in os.listdir(folder+dir):
 			if file!='.DS_Store':
