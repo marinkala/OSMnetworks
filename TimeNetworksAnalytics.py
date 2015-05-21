@@ -5,13 +5,15 @@ import os.path
 import cent_measures
 from networkx.readwrite import json_graph
 import json
+import config_model
 
 
 def getFolder(bucket):
-	folder='/Users/Ish/Documents/OSM_Files/haiti_earthquake/networks14days/\
-overlapping_changesets_by_'+bucket+'_hour/'
-	#folder='/Users/Ish/Documents/OSM_Files/haiti_earthquake/networks14days/\
-#intersecting_roads_by_'+bucket+'_hour/'
+	'''folder='/Users/Ish/Documents/OSM_Files/philippines/networks14days/\
+overlapping_changesets_by_'+bucket+'_hour/' '''
+	'''folder='/Users/Ish/Documents/OSM_Files/haiti_earthquake/networks14days/\
+overlapping_changesets_by_'+bucket+'_hour/'''
+	folder='/Users/Ish/Dropbox/OSM-Networks-CSCW2016/scratch/co_editing_objects_8hour/'
 	return folder
 
 def getJsonNet(path):
@@ -34,8 +36,8 @@ def networkSize(bucket):
 		if file!='.DS_Store':
 			name.append(file)
 			path=folder+file
-			#G=getJsonNet(path)
-			G=nx.read_gml(path)
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			n.append(len(G))
 	#np.array(n).tofile('networkSize.txt',sep=',')
@@ -47,8 +49,8 @@ def avgQuant(quant, bucket):
 	if quant=='strength':
 		quantString='Strength'
 	bucket=str(bucket)
-	folder='/Users/Ish/Dropbox/OSM/results/TwoWeeks/overlapping_changesets/'
-	y=np.fromfile(folder+'AvgNet'+quantString+'/overlapping_changesets_by_'+bucket\
+	folder='/Users/Ish/Dropbox/OSM/results/Philippines/TwoWeeks/intersecting_roads/'
+	y=np.fromfile(folder+'AvgNet'+quantString+'/intersecting_roads_by_'+bucket\
 	+'_hour_avg'+quantString+'.txt',sep=',')
 	return y
 	
@@ -59,8 +61,8 @@ def diameter(bucket): #diameter of largest componenent
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
 			path=folder+file
-			#G=getJsonNet(path)
-			G=nx.read_gml(path)
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
 			if len(G)>0:
@@ -77,8 +79,8 @@ def absCompSize(bucket):
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
 			path=folder+file
-			#G=getJsonNet(path)
-			G=nx.read_gml(path)
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
 			if len(G)>0:
@@ -95,8 +97,8 @@ def relCompSize(bucket):
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
 			path=folder+file
-			#G=getJsonNet(path)
-			G=nx.read_gml(path)
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
 			if len(G)>0: #should it be not just non-empty? but with edges?
@@ -113,8 +115,8 @@ def numComps(bucket):
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
 			path=folder+file
-			#G=getJsonNet(path)
-			G=nx.read_gml(path)
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
 			if len(G)>0:
@@ -131,8 +133,8 @@ def singletons(bucket):
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
 			path=folder+file
-			#G=getJsonNet(path)
-			G=nx.read_gml(path)
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			if len(G)>0:
 				s.append(len(nx.isolates(G))/float(len(G)))
@@ -148,8 +150,8 @@ def nonSinglComps(bucket):
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
 			path=folder+file
-			#G=getJsonNet(path)
-			G=nx.read_gml(path)
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
 			if len(G)>0:
@@ -166,8 +168,8 @@ def clustComp(bucket):
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
 			path=folder+file
-			#G=getJsonNet(path)
-			G=nx.read_gml(path)
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			comps=sorted(nx.connected_component_subgraphs(G), key = len, reverse=True)
 			i=3
@@ -185,8 +187,8 @@ def clustering(bucket):
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
 			path=folder+file
-			#G=getJsonNet(path)
-			G=nx.read_gml(path)
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			if len(G)>0:
 				c.append(nx.transitivity(G))
@@ -202,8 +204,8 @@ def degreeAssort(bucket,weight):
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
 			path=folder+file
-			#G=getJsonNet(path)
-			G=nx.read_gml(path)
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			if G.number_of_edges()>0:
 				r.append(nx.degree_assortativity_coefficient(G, weight=weight))
@@ -220,8 +222,8 @@ def harmCent(bucket):
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
 			path=folder+file
-			#G=getJsonNet(path)
-			G=nx.read_gml(path)
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			if len(G)>1: #denominator of harm cent is num_nodes-1
 				cent=cent_measures.harm_cent(G)
@@ -241,8 +243,8 @@ def btwCent(bucket):
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
 			path=folder+file
-			#G=getJsonNet(path)
-			G=nx.read_gml(path)
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			if len(G)>0:
 				cent=cent_measures.btw_cent(G)
@@ -262,8 +264,8 @@ def eigCent(bucket):
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
 			path=folder+file
-			#G=getJsonNet(path)
-			G=nx.read_gml(path)
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			if len(G)>0:
 				cent=cent_measures.eig_cent(G)
@@ -283,8 +285,8 @@ def pagerank(bucket):
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
 			path=folder+file
-			#G=getJsonNet(path)
-			G=nx.read_gml(path)
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			if len(G)>0:
 				cent=nx.pagerank(G)
@@ -304,8 +306,8 @@ def degCent(bucket, index):
 	for file in os.listdir(folder):
 		if file!='.DS_Store':
 			path=folder+file
-			#G=getJsonNet(path)
-			G=nx.read_gml(path)
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
 			G=nx.Graph(G)
 			if len(G)>index+1: #degree_centrality has s=1.0/(len(G)-1.0)
 				cent=nx.degree_centrality(G)
@@ -436,3 +438,94 @@ def expAssortNew(bucket):
 				r.append(-100)
 	return r
 
+def compSizeConfig(bucket, reps):
+	bucket=str(bucket)
+	folder=getFolder(bucket)
+	s=[]
+	for file in os.listdir(folder):
+		if file!='.DS_Store':
+			path=folder+file
+			#G=getJsonNet(path)
+			G=nx.read_gml(path)
+			G=nx.Graph(G)
+			if len(G)>0:
+				cmg=config_model.configModelGraphs(G,reps) #get reps number of graphs from config model - w/ the same deg dist
+				sizes=np.zeros(reps)
+				for i in xrange(reps): #for each of simulated graphs
+					comps=sorted(nx.connected_component_subgraphs(cmg[i]), key = len, reverse=True)
+					sizes[i]=len(comps[0])/float(len(G)) #no else needed - seede with 0s already
+				s.append(sizes.mean())
+			else:
+				s.append(0)
+	#np.array(s).tofile('largestCompFracSize.txt',sep=',')
+	return s
+
+def clusteringConfig(bucket, reps):
+	bucket=str(bucket)
+	folder=getFolder(bucket)
+	s=[]
+	for file in os.listdir(folder):
+		if file!='.DS_Store':
+			path=folder+file
+			#G=getJsonNet(path)
+			G=nx.read_gml(path)
+			G=nx.Graph(G)
+			cmg=config_model.configModelGraphs(G,reps) #get reps number of graphs from config model - w/ the same deg dist
+			clust=-100*np.ones(reps)
+			for i in xrange(reps): #for each of simulated graphs
+				if len(G)>0:
+					clust[i]=nx.transitivity(cmg[i]) #seeded with -100 already for empty nets
+			clust=clust[clust>-100] #only use the networks where clust could be calculated
+			if len(clust)>0:
+				s.append(clust.mean())
+			else:
+				s.append(-100)
+	#np.array(s).tofile('largestCompFracSize.txt',sep=',')
+	return s
+
+def singlConfig(bucket, reps):
+	bucket=str(bucket)
+	folder=getFolder(bucket)
+	s=[]
+	for file in os.listdir(folder):
+		if file!='.DS_Store':
+			path=folder+file
+			#G=getJsonNet(path)
+			G=nx.read_gml(path)
+			G=nx.Graph(G)
+			if len(G)>0:
+				cmg=config_model.configModelGraphs(G,reps) #get reps number of graphs from config model - w/ the same deg dist
+				singl=-100*np.ones(reps)
+				for i in xrange(reps): #for each of simulated graphs
+					singl[i]=len(nx.isolates(cmg[i]))/float(len(cmg[i]))
+				s.append(singl.mean())
+			else:
+				s.append(0)
+	#np.array(s).tofile('largestCompFracSize.txt',sep=',')
+	return s
+
+def weightAssortConfig(bucket, reps):
+	bucket=str(bucket)
+	folder=getFolder(bucket)
+	s=[]
+	for file in os.listdir(folder):
+		if file!='.DS_Store':
+			path=folder+file
+			#G=getJsonNet(path)
+			G=nx.read_gml(path)
+			G=nx.Graph(G)
+			if G.number_of_edges()>0:
+				cmg=config_model.weightConfigModelGraphs(G,reps) #get reps number of graphs from config model - w/ the same deg dist
+				assort=-100*np.ones(reps)
+				for i in xrange(reps): #for each of simulated graphs
+					if cmg[i].number_of_edges>0:
+						assort[i]=nx.degree_assortativity_coefficient(cmg[i], weight='weight')
+				assort=assort[assort>-100] #only use the networks where assort could be calculated
+				if len(assort)>0:
+					s.append(assort.mean())
+				else:
+					s.append(-100)
+			else:
+				s.append(-100)
+	#np.array(s).tofile('largestCompFracSize.txt',sep=',')
+	return s
