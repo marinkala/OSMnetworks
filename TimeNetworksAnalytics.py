@@ -11,15 +11,14 @@ import config_model
 def getFolder(bucket):
 	'''folder='/Users/Ish/Documents/OSM_Files/philippines/networks14days/\
 overlapping_changesets_by_'+bucket+'_hour/' '''
-	'''folder='/Users/Ish/Documents/OSM_Files/haiti_earthquake/networks14days/\
-overlapping_changesets_by_'+bucket+'_hour/'''
-	folder='/Users/Ish/Dropbox/OSM-Networks-CSCW2016/scratch/co_editing_objects_8hour/'
+	folder='/Users/Ish/Documents/OSM_Files/haiti_earthquake/networks14days/\
+intersecting_roads_by_'+bucket+'_hour/'
 	return folder
 
 def getJsonNet(path):
 	data=open(path).read()
 	parsed=json.loads(data)
-	G=json_graph.node_link_graph(parsed)
+	G=json_graph.node_link_graph(parsed, directed=True)
 	return G
 
 def getExpFolder(bucket):
@@ -529,3 +528,30 @@ def weightAssortConfig(bucket, reps):
 				s.append(-100)
 	#np.array(s).tofile('largestCompFracSize.txt',sep=',')
 	return s
+
+
+def newbOutDegree(bucket):
+	bucket=str(bucket)
+	folder=getFolder(bucket)
+	newb=[]
+	exp=[]
+	for file in os.listdir(folder):
+		if file!='.DS_Store':
+			path=folder+file
+			G=getJsonNet(path)
+			#G=nx.read_gml(path)
+			newbs=list(n for n in G if G.node[n]['status']=='New')
+			if len(newbs)>0:
+				degree=G.out_degree()
+				df=pd.DataFrame()
+				df['names']=degree.keys()
+				df['degs']=degree.values()
+				newbAvgDeg=(df.degs[df.names.isin(newbs)]).mean()
+				expAvgDeg=(df.degs[~df.names.isin(newbs)]).mean()
+			else:
+				newbAvgDeg=-100
+				expAvgDeg=-100
+			newb.append(newbAvgDeg)
+			exp.append(expAvgDeg)
+	#np.array(n).tofile('networkSize.txt',sep=',')
+	return newb, exp
