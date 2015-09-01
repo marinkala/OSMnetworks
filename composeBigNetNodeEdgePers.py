@@ -43,7 +43,7 @@ def composeWeights(G,H): #H is the new network being appended to the overall net
 		H.node[node_id]['persistence']
 	return K
 
-def combineAll(folder):
+def combineAll(in_folder, out_folder):
 	#expFolder='/Users/Ish/Dropbox/OSM/results/TwoWeeks/overlapping_changesets/ExpAnnotNets/\
 #overlapping_changesets_by_'+bucket+'_hour/'
 	B=nx.DiGraph()
@@ -59,4 +59,4 @@ def combineAll(folder):
 'hourBigNetworkNodeEdgePersDir.yaml')
 
 in_folder, out_folder=getFolders(8,'h','changeset')
-combineAll(folder)
+combineAll(in_folder, out_folder)
