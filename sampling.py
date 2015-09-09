@@ -9,8 +9,7 @@ def temporal(in_folder, big_folder):
 	#if more than 50% of the time slices where for the same part of the day - output the mapper and time slices
 	B=nx.read_yaml(big_folder)
 	users=B.nodes(data=True)
-	pers_users=[u[0] for u in users if u[1]['persistence']>1]
-	same_time_prop=[0]*len(pers_users) #list to  hold the prop of the same times for each user
+	pers_users=[u[0] for u in users if u[1]['persistence']>5] 
 	for u in pers_users:
 		night=0
 		day=0
@@ -18,7 +17,7 @@ def temporal(in_folder, big_folder):
 		persistence=0
 		for file in os.listdir(in_folder):
 			if file!='.DS_Store': #weird MAC thing
-				path=folder+file
+				path=in_folder+file
 				G=getJsonNet(path)
 				G=nx.DiGraph(G)
 				if G.has_node(u):
@@ -30,11 +29,12 @@ def temporal(in_folder, big_folder):
 						day+=1
 					else:
 						evenining+=1
-		if night/float(persistence)>0.33:
+		if night/float(persistence)>0.5:
 			print u, 'night'
-		elif day/float(persistence)>0.33:
+		elif day/float(persistence)>0.5:
 			print u, 'day'
-		elif evenining/float(persistence)>0.33:
+		elif evenining/float(persistence)>0.5:
 			print u, 'evenining'
 
 in_folder, big_folder=getFolders(8,'h','changeset')
+temporal(in_folder, big_folder)
