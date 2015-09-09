@@ -16,7 +16,7 @@ def getFolder(place, netType):
 	folder='/Users/Ish/Documents/OSM_Files/'+place_string+'/networks14days/'+netString+'_by_'+str(bucket)+'_hour/'
 	return folder
 
-def findTimeSlices(user,folder):
+def findTimeSliceByNode(user,folder):
 	#folder='/Users/Ish/Documents/OSM_Files/haiti_earthquake/networks14days/overlapping_changesets_by_'+bucket+'_hour/'
 
 	timeList=[]
@@ -31,6 +31,20 @@ def findTimeSlices(user,folder):
 				timeList.append(file)
 	return timeList
 
+def findTimeSliceByEdge(edge,folder):
+	#folder='/Users/Ish/Documents/OSM_Files/haiti_earthquake/networks14days/overlapping_changesets_by_'+bucket+'_hour/'
+
+	timeList=[]
+	for file in os.listdir(folder):
+		if file!='.DS_Store': #weird MAC thing
+			path=folder+file
+			G=getJsonNet(path)
+			G=nx.DiGraph(G)
+			if edge in set(G.edges()):
+				print file
+				timeList.append(file)
+	return timeList
+
 def combineSelectSlices(timeList, folder):
 	B=nx.DiGraph()
 	for slice in timeList:
@@ -41,6 +55,7 @@ def combineSelectSlices(timeList, folder):
 	return B
 	
 
-folder=getFolder('p', 'changeset')
-tl=findTimeSlices('BrunoRemy',folder)
-B=combineSelectSlices(tl,folder)
+folder=getFolder('h', 'changeset')
+#tl=findTimeSliceByNode('BrunoRemy',folder)
+#B=combineSelectSlices(tl,folder)
+tl2=findTimeSliceByEdge(('SK53', 'robert'),folder)

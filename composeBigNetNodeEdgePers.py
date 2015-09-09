@@ -11,11 +11,13 @@ def getFolders(bucket,place, netType):
 		out_string='Philippines'
 	if netType=='changeset':
 		netString='overlapping_changesets'
-	else:
+	elif netType=='road':
 		netString='intersecting_roads'
-	in_folder='/Users/Ish/Documents/OSM_Files/'+place_string+'/networks14days/'+netString+'_by_'+str(bucket)+'_hour/'
+	else:
+		netString='distinct_objects'
+	in_folder='/Users/Ish/Documents/OSM_Files/'+place_string+'/networks14days/'+netString+'_by_'+str(bucket)+'_hour45K/'
 	out_folder='/Users/Ish/Dropbox/OSM/results/'+out_string+'/TwoWeeks/'+netString+'/'+str(bucket)+\
-'hourBigNetworkNodeEdgePersDir.yaml'
+'hourBigNetworkNodeEdgePersDir45K.yaml'
 	return in_folder, out_folder
 
 def composeWeights(G,H): #H is the new network being appended to the overall net G
@@ -38,7 +40,7 @@ def composeWeights(G,H): #H is the new network being appended to the overall net
 		H[source][target]['persistence']
 	for i in xrange(len(node_intersect)):
 		node_id=node_intersect[i]
-		K[node_id]['weight']=G[node_id]['weight']+H[node_id]['weight']
+		#K[node_id]['weight']=G[node_id]['weight']+H[node_id]['weight']
 		K.node[node_id]['persistence']=G.node[node_id]['persistence']+\
 		H.node[node_id]['persistence']
 	return K
@@ -47,16 +49,16 @@ def combineAll(in_folder, out_folder):
 	#expFolder='/Users/Ish/Dropbox/OSM/results/TwoWeeks/overlapping_changesets/ExpAnnotNets/\
 #overlapping_changesets_by_'+bucket+'_hour/'
 	B=nx.DiGraph()
-	for file in os.listdir(folder):
+	for file in os.listdir(in_folder):
 		if file!='.DS_Store': #weird MAC thing
-			path=folder+file
+			path=in_folder+file
+			print file
 			G=getJsonNet(path)
 			#G=nx.read_gml(path)
 			G=nx.DiGraph(G)
 			B=composeWeights(B,G)
 	#return B
-	nx.write_yaml(B,'/Users/Ish/Dropbox/OSM/results/Haiti/TwoWeeks/overlapping_changesets/'+str(bucket)+\
-'hourBigNetworkNodeEdgePersDir.yaml')
+	nx.write_yaml(B, out_folder)
 
 in_folder, out_folder=getFolders(8,'h','changeset')
 combineAll(in_folder, out_folder)
