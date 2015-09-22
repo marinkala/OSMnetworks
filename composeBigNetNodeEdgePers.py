@@ -15,7 +15,7 @@ def getFolders(bucket,place, netType):
 		netString='intersecting_roads'
 	else:
 		netString='distinct_objects'
-	in_folder='/Users/Ish/Documents/OSM_Files/'+place_string+'/networks14days/'+netString+'_by_'+str(bucket)+'_hour45K/'
+	in_folder='/Users/Ish/Documents/OSM_Files/'+place_string+'/networks14days/'+netString+'_by_'+str(bucket)+'_hour45Klatest/'
 	out_folder='/Users/Ish/Dropbox/OSM/results/'+out_string+'/TwoWeeks/'+netString+'/'+str(bucket)+\
 'hourBigNetworkNodeEdgePersDir45K.yaml'
 	return in_folder, out_folder
@@ -52,7 +52,7 @@ def combineAll(in_folder, out_folder):
 	for file in os.listdir(in_folder):
 		if file!='.DS_Store': #weird MAC thing
 			path=in_folder+file
-			print file
+			
 			G=getJsonNet(path)
 			#G=nx.read_gml(path)
 			G=nx.DiGraph(G)
@@ -60,5 +60,5 @@ def combineAll(in_folder, out_folder):
 	#return B
 	nx.write_yaml(B, out_folder)
 
-in_folder, out_folder=getFolders(8,'h','changeset')
-combineAll(in_folder, out_folder)
+#in_folder, out_folder=getFolders(8,'h','changeset')
+#combineAll(in_folder, out_folder)

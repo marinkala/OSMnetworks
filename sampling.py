@@ -70,6 +70,36 @@ def expand_out(in_folder, diamThresh):
 							if len(x.values()[i])==diam+1: #diameter pat
 								print x.values()[i]
 
+def expand_out2(in_folder, compThresh): #directed
+#filling in the puzzle by overlapping with someone else for changeset_overlap
+#building out the road network for intersecting_roads
+	for file in os.listdir(in_folder):
+		if file!='.DS_Store': #weird MAC thing
+			path=in_folder+file
+			G=getJsonNet(path)
+			G=nx.DiGraph(G) #need long chains - not directed
+			if G.order()>0:
+				giant=sorted(nx.strongly_connected_components(G), key = len, reverse=True)[0]
+				if len(giant)/float(len(G))>compThresh:
+					print file
+					print "giant: ", giant
+					print "not in giant: ", list(set(G.nodes())-set(giant))
+
+def expand_out3(in_folder, compThresh): #undirected
+#filling in the puzzle by overlapping with someone else for changeset_overlap
+#building out the road network for intersecting_roads
+	for file in os.listdir(in_folder):
+		if file!='.DS_Store': #weird MAC thing
+			path=in_folder+file
+			G=getJsonNet(path)
+			G=nx.Graph(G) #need long chains - not directed
+			if G.order()>0:
+				giant=sorted(nx.connected_components(G), key = len, reverse=True)[0]
+				if len(giant)/float(len(G))>compThresh:
+					print file
+					print "giant: ", giant
+					print "not in giant: ", list(set(G.nodes())-set(giant))
+
 def reciprocity(big_folder, weightThresh):
 	B=nx.read_yaml(big_folder)
 	reciprocity=[]
@@ -104,23 +134,39 @@ def supervisor(big_folder):
 	for e in B.edges_iter():
 		if (e[1] in newList) & (e[0] not in newList):
 			initList.append(e[0]) #save the experienced user who's edited after a new user
+			print e
 	initList=list(set(initList)) #get rid of the duplicates
 	highNewProp=[]
-	for m in initList:
+	for m in initList: #for each mapper in the initial list
 		succ=B.successors(m)
 		new_succ=0
+		new_succList=[]
 		for s in succ:
 			if s in newList:
 				new_succ+=1
+				new_succList.append(s)
 		new_prop=new_succ/float(len(succ))
 		if new_prop>0.5:
 			highNewProp.append(m)
+			highNewProp.append(new_succList)
 	print highNewProp
+
+def supervised(big_folder, weightThresh):
+	with open('/Users/Ish/Dropbox/OSM/results/Haiti/new_users', 'rb') as f:
+		newList = pickle.load(f)
+	B=nx.read_yaml(big_folder)
+	initList=[]
+	for e in B.edges_iter():
+		if (e[1] in newList) & (e[0] not in newList):
+			if B[e[0]][e[1]]['weight']>weightThresh:
+				if ~B.has_edge(e[1],e[0]): #new user doesn't respond back
+					print e
 
 in_folder, big_folder=getFolders(8,'h','changeset')
 #temporal(in_folder, big_folder, 3, 0.75)
-#spatial_major(in_folder, 3)
-#expand_out(in_folder, 7)
-#sideBySide(in_folder, big_folder, 5)
+spatial_major(in_folder, 5)
+#expand_out2(in_folder, 0.5) 
+#sideBySide(in_folder, big_folder, 10)
 #supervision(in_folder, big_folder, 3)
-supervisor(big_folder)
+#supervisor(big_folder)
+#supervised(big_folder, 4)
