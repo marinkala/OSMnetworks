@@ -15,9 +15,9 @@ def getFolders(bucket,place, netType):
 		netString='intersecting_roads'
 	else:
 		netString='distinct_objects'
-	in_folder='/Users/Ish/Documents/OSM_Files/'+place_string+'/networks14days/'+netString+'_by_'+str(bucket)+'_hour45Klatest/'
-	out_folder='/Users/Ish/Dropbox/OSM/results/'+out_string+'/TwoWeeks/'+netString+'/'+str(bucket)+\
-'hourBigNetworkNodeEdgePersDir45K.yaml'
+	in_folder='/Users/Ish/Documents/OSM_Files/'+place_string+'/networks14days/UTC_'+netString+'_by_'+str(bucket)+'_hour/'
+	out_folder='/Users/Ish/Dropbox/OSM/results/'+out_string+'/TwoWeeks/'+netString+'/UTC_'+str(bucket)+\
+'hourBigNetworkNodeEdgePersDir.yaml'
 	return in_folder, out_folder
 
 def composeWeights(G,H): #H is the new network being appended to the overall net G
@@ -60,5 +60,5 @@ def combineAll(in_folder, out_folder):
 	#return B
 	nx.write_yaml(B, out_folder)
 
-#in_folder, out_folder=getFolders(8,'h','changeset')
-#combineAll(in_folder, out_folder)
+in_folder, out_folder=getFolders(8,'h','changeset')
+combineAll(in_folder, out_folder)

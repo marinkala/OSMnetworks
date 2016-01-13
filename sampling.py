@@ -25,12 +25,12 @@ def temporal(in_folder, big_folder, persThresh, consistThresh):
 				if G.has_node(u):
 					persistence+=1
 					period=str(file)[11:13]
-					if period=='03':
+					if period=='00': #03 for the old, wrong time
 						night+=1
-					elif period=='11':
+					elif period=='08': #11 for the old, wrong time
 						day+=1
 					else:
-						evenining+=1
+						evenining+=1 
 		if night/float(persistence)>consistThresh:
 			print u, 'night', night/float(persistence)
 		elif day/float(persistence)>consistThresh:
@@ -163,8 +163,8 @@ def supervised(big_folder, weightThresh):
 					print e
 
 in_folder, big_folder=getFolders(8,'h','changeset')
-#temporal(in_folder, big_folder, 3, 0.75)
-spatial_major(in_folder, 5)
+temporal(in_folder, big_folder, 3, 0.75)
+#spatial_major(in_folder, 5)
 #expand_out2(in_folder, 0.5) 
 #sideBySide(in_folder, big_folder, 10)
 #supervision(in_folder, big_folder, 3)
